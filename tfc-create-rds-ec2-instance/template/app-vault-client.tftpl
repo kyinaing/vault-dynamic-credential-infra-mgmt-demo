@@ -1,0 +1,75 @@
+#!/usr/bin/env bash
+
+##--------------------------------------------------------------------
+## Install mysql client
+
+sudo apt-get -y update
+sudo apt-get -y install mysql-client
+mysql --version
+
+##--------------------------------------------------------------------
+## Install Vault
+
+sudo apt -y update && sudo apt -y install gpg wget
+wget -O- https://apt.releases.hashicorp.com/gpg | sudo gpg --dearmor -o /usr/share/keyrings/hashicorp-archive-keyring.gpg
+gpg --no-default-keyring --keyring /usr/share/keyrings/hashicorp-archive-keyring.gpg --fingerprint
+echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/hashicorp.list
+sudo apt -y update && sudo apt -y install vault
+vault version
+
+##--------------------------------------------------------------------
+## Template file
+##--------------------------------------------------------------------
+cat << EOF > /home/ubuntu/mysql-tmpl.tmpl
+{{ with secret "db/creds/readwrite-role" }} 
+Username: {{ .Data.username }} 
+Password: {{ .Data.password }}{{ end }}
+EOF
+sudo chmod 0775 /home/ubuntu/mysql-tmpl.tmpl
+
+##--------------------------------------------------------------------
+## Shortcut script
+##--------------------------------------------------------------------
+cat << EOF > /home/ubuntu/vault-agent.hcl
+exit_after_auth = true
+pid_file = "./pidfile"
+
+auto_auth {
+   method "aws" {
+       mount_path = "auth/master-aws-auth"
+       namespace = "admin"
+       config = {
+           type = "iam"
+           role = "ec2-role"
+       }
+   }
+
+   sink "file" {
+       config = {
+           path = "/home/ubuntu/vault-token-via-agent"
+       }
+   }
+}
+
+vault {
+   address = "${tpl_vault_server_addr}"
+}
+
+template_config {
+  static_secret_render_interval = "10m"
+  exit_on_retry_failure = true
+  max_connections_per_host = 20
+  lease_renewal_threshold = 0.90
+}
+
+template {
+  source = "/home/ubuntu/mysql-tmpl.tmpl"
+  destination  = "/tmp/agent/render-content.txt"
+}
+EOF
+
+sudo chmod 0775 /home/ubuntu/vault-agent.hcl
+
+#  contents     = "{{ with secret \"db/creds/readwrite-role\" }} Username: {{ .Data.username }} Password: {{ .Data.password }}{{ end }}"
+
+

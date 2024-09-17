@@ -1,3 +1,0 @@
-[submodule "terraform-aws-create-vpc"]
-	path = terraform-aws-create-vpc
-	url = ./terraform-aws-create-vpc/
