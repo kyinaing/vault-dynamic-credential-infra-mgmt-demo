@@ -23,18 +23,23 @@ output "endpoints" {
 AWS RDS Endpoint:  ${aws_db_instance.project_rds.endpoint}
 
 For example:
-    mysql -h ${aws_db_instance.project_rds.id} -P ${aws_db_instance.project_rds.port} -u ${aws_db_instance.project_rds.username} -p
+    mysql -h ${aws_db_instance.project_rds.address} -P ${aws_db_instance.project_rds.port} -u ${aws_db_instance.project_rds.username} -p
 
 Jump Server IP (public):  ${aws_instance.jump.public_ip}
 Jump Server IP (private): ${aws_instance.jump.private_ip}
 
 For example:
-   ssh -i ${aws_key_pair.main.key_name}.pem ubuntu@${aws_instance.jump.public_ip}
+   ssh -i private.key ubuntu@${aws_instance.jump.public_ip}
 
 APP Client IP (private): ${aws_instance.app.private_ip}
 
 For example:
-   ssh -i ${aws_key_pair.main.key_name}.pem ubuntu@${aws_instance.app.private_ip}
+   ssh -i private.key.pem ubuntu@${aws_instance.app.private_ip}
+
+APP Approle Client IP (private): ${aws_instance.app-approle.private_ip}
+
+For example:
+   ssh -i private.key.pem ubuntu@${aws_instance.app-approle.private_ip}
 
 APP Client IAM Role ARN: ${data.aws_iam_role.vault-client.arn}
 

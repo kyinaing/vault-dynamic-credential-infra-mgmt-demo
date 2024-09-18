@@ -159,6 +159,9 @@ data "template_file" "vault_agent" {
 
   vars = {
     tpl_vault_server_addr = var.vault_addr
+    MYSQL_HOST = aws_db_instance.project_rds.address
+    MYSQL_USER = aws_db_instance.project_rds.username
+    MYSQL_PASS = aws_db_instance.project_rds.password
   }
 }
 
@@ -176,7 +179,7 @@ resource "aws_instance" "app-approle" {
   user_data = data.template_file.vault_agent_approle.rendered
 
   tags = {
-    Name = "${var.environment_name}-app"
+    Name = "${var.environment_name}-app-approle"
   }
   lifecycle {
     ignore_changes = [

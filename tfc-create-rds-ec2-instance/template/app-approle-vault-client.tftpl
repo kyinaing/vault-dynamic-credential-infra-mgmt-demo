@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 
+sudo apt-get install net-tools
 ##--------------------------------------------------------------------
 ## Install mysql client
 
@@ -47,7 +48,7 @@ sudo chmod 0775 /home/ubuntu/login_secret_id
 ## Shortcut script
 ##--------------------------------------------------------------------
 cat << EOF > /home/ubuntu/vault-agent.hcl
-exit_after_auth = true
+#exit_after_auth = true
 pid_file = "./pidfile"
 
 auto_auth {
@@ -109,10 +110,7 @@ Requires=network-online.target
 After=network-online.target
 [Service]
 Restart=on-failure
-PermissionsStartOnly=true
-ExecStartPre=/sbin/setcap 'cap_ipc_lock=+ep' /usr/local/bin/vault
-ExecStart=/usr/local/bin/vault agent -config /home/ubuntu/vault-agent.hcl
-ExecReload=/bin/kill -HUP $MAINPID
+ExecStart=/usr/bin/vault agent -config /home/ubuntu/vault-agent.hcl -log-level=debug
 KillSignal=SIGTERM
 [Install]
 WantedBy=multi-user.target
@@ -128,6 +126,7 @@ sudo systemctl start vault
 ##--------------------------------------------------------------------
 ## Create Vault.py
 ##--------------------------------------------------------------------
+mkdir /home/ubuntu/python
 cat << EOF > /home/ubuntu/python/vault.py
 
 import hvac
