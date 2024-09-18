@@ -8,7 +8,7 @@ variable "auth_backend_path" {
   default = "tfc-approle"
 }
 
-variable "aws_secret_policy" {
+variable "db_secret_policy" {
   description = "AWS Secret Policy Name for Approle"
   default = "db_secret_policy"
 }
@@ -18,7 +18,7 @@ variable "admin_policy" {
   default = "admin_secret_policy"
 }
 
-variable "aws_approle_role_name" {
+variable "db_approle_role_name" {
   description = "AWS Role Name for Approle"
   default = "db-secret-approle"
 }

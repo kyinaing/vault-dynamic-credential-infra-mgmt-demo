@@ -5,7 +5,7 @@ resource "vault_auth_backend" "tfc-approle" {
 }
 
 resource "vault_policy" "db_secret_backend_policy" {
-  name = var.aws_secret_policy
+  name = var.db_secret_policy
   policy = <<EOT
 path "db/" {
   capabilities = ["update",read","list"]
@@ -65,7 +65,7 @@ EOT
 
 resource "vault_approle_auth_backend_role" "aws_approle_role" {
   backend = vault_auth_backend.tfc-approle.path
-  role_name = var.aws_approle_role_name
+  role_name = var.db_approle_role_name
   token_policies = [vault_policy.aws_secret_backend_policy.name]
   token_ttl = 600
   token_max_ttl = 1800
