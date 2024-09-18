@@ -8,14 +8,15 @@ resource "vault_policy" "db_secret_backend_policy" {
   name = var.db_secret_policy
   policy = <<EOT
 path "db/" {
-  capabilities = ["update",read","list"]
+  capabilities = ["read","list"]
 }
 
 path "db/*" {
-  capabilities = [read","list"]
+  capabilities = ["read","list"]
 }
 
-path "auth/token/create" {
+path "auth/token/create" 
+{
   capabilities = ["update"]
 }
 EOT
