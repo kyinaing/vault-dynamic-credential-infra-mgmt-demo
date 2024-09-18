@@ -6,17 +6,17 @@ output "approle_auth_backend_path" {
 #######################################################################
 # Role for AWS
 #######################################################################
-output "aws_approle_role_name" {
+output "db_approle_role_name" {
   description = "This is AppRole Role Name of AWS Secret"
   value = vault_approle_auth_backend_role.aws_approle_role.role_name
 }
 
-output "aws_approle_role_id" {
+output "db_approle_role_id" {
   description = "This is AppRole Role ID of AWS Secret Path"
   value = nonsensitive(vault_approle_auth_backend_role.aws_approle_role.role_id)
 }
 
-output "aws_approle_role_sid" {
+output "db_approle_role_sid" {
   description = "This is AppRole Role Secred ID of AWS"
   value = vault_approle_auth_backend_role_secret_id.aws_approle_role_sid.secret_id
   sensitive = true
