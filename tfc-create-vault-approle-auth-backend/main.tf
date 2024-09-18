@@ -4,14 +4,14 @@ resource "vault_auth_backend" "tfc-approle" {
   path = var.auth_backend_path
 }
 
-resource "vault_policy" "aws_secret_backend_policy" {
+resource "vault_policy" "db_secret_backend_policy" {
   name = var.aws_secret_policy
   policy = <<EOT
-path "aws-master-account/" {
+path "db/" {
   capabilities = ["update",read","list"]
 }
 
-path "aws-master-account/*" {
+path "db/*" {
   capabilities = [read","list"]
 }
 
