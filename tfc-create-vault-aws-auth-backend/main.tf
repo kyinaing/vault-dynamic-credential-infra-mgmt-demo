@@ -28,8 +28,8 @@ resource "vault_aws_auth_backend_role" "main" {
   role                            = var.aws_auth_role
   auth_type                       = var.role_type
   bound_iam_principal_arns        = [aws_iam_role.vault-client.arn]
-  token_ttl                       = 60
-  token_max_ttl                   = 120
+  token_ttl                       = 600
+  token_max_ttl                   = 1200
   token_policies                  = [vault_policy.mysql-policy.name]
 }
 
