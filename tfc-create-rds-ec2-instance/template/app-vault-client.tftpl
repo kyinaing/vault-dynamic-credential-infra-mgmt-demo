@@ -75,7 +75,7 @@ sudo /home/ubuntu/mysql-script.sh
 ##--------------------------------------------------------------------
 ## Template file
 ##--------------------------------------------------------------------
-sudo -u vault cat << EOF > /home/ubuntu/mysql-tmpl.tmpl
+cat << EOF > /home/ubuntu/mysql-tmpl.tmpl
 {{ with secret "db/creds/readwrite-role" }} 
 Username: {{ .Data.username }} 
 Password: {{ .Data.password }}{{ end }}
