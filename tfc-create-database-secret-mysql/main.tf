@@ -4,7 +4,7 @@ resource "vault_database_secrets_mount" "db" {
   mysql {
     name           = var.config_name
     username       = var.conn_username
-    password       = var.conn_username
+    password       = var.conn_password
     connection_url = var.conn_url
     allowed_roles = var.allowed_roles
   }
