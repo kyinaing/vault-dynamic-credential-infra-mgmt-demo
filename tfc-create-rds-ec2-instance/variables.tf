@@ -1,10 +1,8 @@
 variable "vault_addr" {
   description = "Vault Address, Need to update"
-  default     = "https://hcp-vault-cluster-private-vault-3e5e8b07.364fe2ae.z1.hashicorp.cloud:8200"
 }
 variable "vpc_id" {
   description = "VPC ID, Need to update"
-  default     = "vpc-066cc46d927a29dc6"
 }
 
 ####################################################################
