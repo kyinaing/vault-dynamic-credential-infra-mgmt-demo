@@ -1,6 +1,5 @@
 variable "vpc_id" {
   description = "(Need to Change) VPC ID"
-  default = "vpc-066cc46d927a29dc6"
 }
 
 
