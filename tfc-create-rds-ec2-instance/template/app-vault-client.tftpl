@@ -65,18 +65,12 @@ EOF
 
 
 ##--------------------------------------------------------------------
-## Create vault user and vault group
+## DB Setup
 ##--------------------------------------------------------------------
 sudo chmod +x /home/ubuntu/mysql-script.sh
 
 sudo /home/ubuntu/mysql-script.sh
-sudo groupadd --gid 864 vault
-sudo useradd --uid 864 --gid 864 \
-               --shell /bin/false \
-               --no-create-home \
-               vault
 
-sudo chown vault:vault /usr/bin/vault
 
 ##--------------------------------------------------------------------
 ## Template file
@@ -86,12 +80,13 @@ sudo -u vault cat << EOF > /home/ubuntu/mysql-tmpl.tmpl
 Username: {{ .Data.username }} 
 Password: {{ .Data.password }}{{ end }}
 EOF
+
 sudo chmod 0775 /home/ubuntu/mysql-tmpl.tmpl
 
 ##--------------------------------------------------------------------
 ## Vault Agent Configuration:
 ##--------------------------------------------------------------------
-sudo -u vault cat << EOF > /home/ubuntu/vault-agent.hcl
+cat << EOF > /home/ubuntu/vault-agent.hcl
 #exit_after_auth = true
 pid_file = "./pidfile"
 
@@ -137,7 +132,6 @@ template {
   destination  = "/tmp/agent/render-content.txt"
 }
 EOF
-
 sudo chmod 0775 /home/ubuntu/vault-agent.hcl
 
 #  contents     = "{{ with secret \"db/creds/readwrite-role\" }} Username: {{ .Data.username }} Password: {{ .Data.password }}{{ end }}"
@@ -146,7 +140,7 @@ sudo chmod 0775 /home/ubuntu/vault-agent.hcl
 ## Vault Agent Service
 ##--------------------------------------------------------------------
 
-sudo -u vault cat << EOF > /lib/systemd/system/vault-agent.service
+cat << EOF > /lib/systemd/system/vault-agent.service
 [Unit]
 Description=Vault Agent
 Requires=network-online.target
@@ -161,7 +155,7 @@ KillSignal=SIGTERM
 WantedBy=multi-user.target
 EOF
 
-sudo chmod 0664 /lib/systemd/system/vault.service
+sudo chmod 0664 /lib/systemd/system/vault-agent.service
 sudo systemctl daemon-reload
 
 systemctl enable vault-agent
@@ -206,4 +200,3 @@ with open("response.txt", "w") as f:
 EOF
 
 sudo chmod 0775 /home/ubuntu/python/vault.py
-sudo chown ubuntu:ubuntu /home/ubuntu/python/ -R

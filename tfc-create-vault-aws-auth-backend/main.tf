@@ -31,6 +31,8 @@ resource "vault_aws_auth_backend_role" "main" {
   token_ttl                       = 600
   token_max_ttl                   = 1200
   token_policies                  = [vault_policy.mysql-policy.name]
+
+  depends_on = [ aws_iam_role.vault-client ]
 }
 
 //------------------------------------------------

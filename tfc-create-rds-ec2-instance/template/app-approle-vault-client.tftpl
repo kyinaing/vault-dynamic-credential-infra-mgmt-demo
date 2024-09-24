@@ -22,24 +22,11 @@ echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/hashi
 sudo apt -y update && sudo apt -y install vault
 vault version
 
-##--------------------------------------------------------------------
-## Create vault user and vault group
-##--------------------------------------------------------------------
-sudo chmod +x /home/ubuntu/mysql-script.sh
-
-sudo /home/ubuntu/mysql-script.sh
-sudo groupadd --gid 864 vault
-sudo useradd --uid 864 --gid 864 \
-               --shell /bin/false \
-               --no-create-home \
-               vault
-
-sudo chown vault:vault /usr/bin/vault
 
 ##--------------------------------------------------------------------
 ## Template file
 ##--------------------------------------------------------------------
-sudo -u vault cat << EOF > /home/ubuntu/mysql-tmpl.tmpl
+cat << EOF > /home/ubuntu/mysql-tmpl.tmpl
 {{ with secret "db/creds/readwrite-role" }} 
 Username: {{ .Data.username }} 
 Password: {{ .Data.password }}{{ end }}
@@ -50,7 +37,7 @@ sudo chmod 0775 /home/ubuntu/mysql-tmpl.tmpl
 ##--------------------------------------------------------------------
 ## Create role_id_file_path
 ##--------------------------------------------------------------------
-sudo -u vault cat << EOF > /home/ubuntu/login_role_id
+cat << EOF > /home/ubuntu/login_role_id
 ${login_role_id}
 EOF
 sudo chmod 0600 /home/ubuntu/login_role_id
@@ -59,7 +46,7 @@ sudo chmod 0600 /home/ubuntu/login_role_id
 ##--------------------------------------------------------------------
 ## secret_id_file_path
 ##--------------------------------------------------------------------
-sudo -u vault cat << EOF > /home/ubuntu/login_secret_id
+cat << EOF > /home/ubuntu/login_secret_id
 ${login_secret_id}
 EOF
 sudo chmod 0600 /home/ubuntu/login_secret_id
@@ -67,7 +54,7 @@ sudo chmod 0600 /home/ubuntu/login_secret_id
 ##--------------------------------------------------------------------
 ## Create Vault Agent Configuration File
 ##--------------------------------------------------------------------
-sudo -u vault cat << EOF > /home/ubuntu/vault-agent.hcl
+cat << EOF > /home/ubuntu/vault-agent.hcl
 #exit_after_auth = true
 pid_file = "./pidfile"
 
@@ -123,7 +110,7 @@ sudo chmod 0775 /home/ubuntu/vault-agent.hcl
 ## Vault Agent Service
 ##--------------------------------------------------------------------
 
-sudo -u vault cat << EOF > /lib/systemd/system/vault-agent.service
+cat << EOF > /lib/systemd/system/vault-agent.service
 [Unit]
 Description=Vault Agent
 Requires=network-online.target
@@ -148,7 +135,6 @@ systemctl start vault-agent
 ##--------------------------------------------------------------------
 ## Create Vault.py
 ##--------------------------------------------------------------------
-sudo chown ubuntu:ubuntu /home/ubuntu/vault_token
 mkdir /home/ubuntu/python
 cat << EOF > /home/ubuntu/python/vault.py
 import hvac
@@ -182,4 +168,3 @@ with open("response.txt", "w") as f:
 EOF
 
 sudo chmod 0775 /home/ubuntu/python/vault.py
-sudo chown ubuntu:ubuntu /home/ubuntu/python/ -R
