@@ -81,6 +81,7 @@ Username: {{ .Data.username }}
 Password: {{ .Data.password }}{{ end }}
 EOF
 
+sudo chown ubuntu:ubuntu /home/ubuntu/mysql-tmpl.tmpl
 sudo chmod 0775 /home/ubuntu/mysql-tmpl.tmpl
 
 ##--------------------------------------------------------------------
@@ -132,6 +133,7 @@ template {
   destination  = "/tmp/agent/render-content.txt"
 }
 EOF
+sudo chown ubuntu:ubuntu /home/ubuntu/vault-agent.hcl
 sudo chmod 0775 /home/ubuntu/vault-agent.hcl
 
 #  contents     = "{{ with secret \"db/creds/readwrite-role\" }} Username: {{ .Data.username }} Password: {{ .Data.password }}{{ end }}"
@@ -139,23 +141,47 @@ sudo chmod 0775 /home/ubuntu/vault-agent.hcl
 ##--------------------------------------------------------------------
 ## Vault Agent Service
 ##--------------------------------------------------------------------
+sudo chown ubuntu:ubuntu /usr/bin/vault
 
 cat << EOF > /lib/systemd/system/vault-agent.service
 [Unit]
-Description=Vault Agent
+Description="HashiCorp Vault - A tool for managing secrets"
+Documentation=https://developer.hashicorp.com/vault/docs
 Requires=network-online.target
 After=network-online.target
+ConditionFileNotEmpty=/etc/vault.d/vault.hcl
+StartLimitIntervalSec=60
+StartLimitBurst=3
+
 [Service]
+Type=notify
+EnvironmentFile=/etc/vault.d/vault.env
 User=vault
 Group=vault
+ProtectSystem=full
+ProtectHome=read-only
+PrivateTmp=yes
+PrivateDevices=yes
+SecureBits=keep-caps
+AmbientCapabilities=CAP_IPC_LOCK
+CapabilityBoundingSet=CAP_SYSLOG CAP_IPC_LOCK
+NoNewPrivileges=yes
+ExecStart=/usr/bin/vault server -config=/home/ubuntu/vault-agent.hcl -log-level=debug
+ExecReload=/bin/kill --signal HUP $MAINPID
+KillMode=process
+KillSignal=SIGINT
 Restart=on-failure
-ExecStart=/usr/bin/vault agent -config /home/ubuntu/vault-agent.hcl -log-level=debug
-KillSignal=SIGTERM
+RestartSec=5
+TimeoutStopSec=30
+LimitNOFILE=65536
+LimitMEMLOCK=infinity
+LimitCORE=0
+
 [Install]
 WantedBy=multi-user.target
 EOF
 
-sudo chmod 0664 /lib/systemd/system/vault-agent.service
+sudo chmod 0664 /lib/systemd/system/vault.service
 sudo systemctl daemon-reload
 
 systemctl enable vault-agent
@@ -165,10 +191,8 @@ systemctl start vault-agent
 ##--------------------------------------------------------------------
 ## Create Vault.py
 ##--------------------------------------------------------------------
-
 mkdir /home/ubuntu/python
 cat << EOF > /home/ubuntu/python/vault.py
-
 import hvac
 import json
 
@@ -199,4 +223,5 @@ with open("response.txt", "w") as f:
     f.close()
 EOF
 
+sudo chown ubuntu:ubuntu /home/ubuntu/python/ -R
 sudo chmod 0775 /home/ubuntu/python/vault.py
