@@ -64,7 +64,7 @@ path "sys/mounts"
 EOT
 }
 
-resource "vault_approle_auth_backend_role" "aws_approle_role" {
+resource "vault_approle_auth_backend_role" "db_approle_role" {
   backend = vault_auth_backend.tfc-approle.path
   role_name = var.db_approle_role_name
   token_policies = [vault_policy.db_secret_backend_policy.name]
@@ -72,9 +72,9 @@ resource "vault_approle_auth_backend_role" "aws_approle_role" {
   token_max_ttl = 1800
 }
 
-resource "vault_approle_auth_backend_role_secret_id" "aws_approle_role_sid" {
+resource "vault_approle_auth_backend_role_secret_id" "db_approle_role_sid" {
   backend = vault_auth_backend.tfc-approle.path
-  role_name = vault_approle_auth_backend_role.aws_approle_role.role_name
+  role_name = vault_approle_auth_backend_role.db_approle_role.role_name
 }
 
 resource "vault_approle_auth_backend_role" "admin_approle_role" {

@@ -39,7 +39,7 @@ resource "vault_aws_secret_backend_role" "network_admin_dynamic_role" {
   "Version": "2012-10-17",
   "Statement": [
     {
-      "Effect": "Allow",
+      "Effect": "Allow",  
       "Action": ["iam:GetUser", 
       "ec2:DescribeAddressesAttribute", 
       "rds:CreateDBSubnetGroup", 

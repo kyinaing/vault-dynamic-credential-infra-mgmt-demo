@@ -8,19 +8,23 @@ Create EC2 Instance for Public Jump and Private App
 AWS RDS Endpoint:  mysql01.c9megm26srja.ap-southeast-1.rds.amazonaws.com:3306
 
 For example:
-    mysql -h db-5SWXAATUDGCKFJIPZER4HJQVLY -P 3306 -u admin -p
+    mysql -h mysql01.c9megm26srja.ap-southeast-1.rds.amazonaws.com -P 3306 -u admin -p
 
-Jump Server IP (public):  13.229.93.189
-Jump Server IP (private): 10.10.1.222
-
-For example:
-   ssh -i ssh-key-hot_emu.pem ubuntu@13.229.93.189
-
-APP Client IP (private): 10.10.4.185
+Jump Server IP (public):  54.169.207.0
+Jump Server IP (private): 10.10.1.155
 
 For example:
-   ssh -i ssh-key-hot_emu.pem ubuntu@10.10.4.185
+   ssh -i private.key ubuntu@54.169.207.0
+
+APP Client IP (private): 10.10.4.207
+
+For example:
+   ssh -i private.key ubuntu@10.10.4.207
+
+APP Approle Client IP (private): 10.10.5.82
+
+For example:
+   ssh -i private.key ubuntu@10.10.5.82
 
 APP Client IAM Role ARN: arn:aws:iam::339713018668:role/ec2-vault-client-role
 
-mysql01.c9megm26srja.ap-southeast-1.rds.amazonaws.com

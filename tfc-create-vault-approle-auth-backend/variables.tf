@@ -9,7 +9,7 @@ variable "auth_backend_path" {
 }
 
 variable "db_secret_policy" {
-  description = "AWS Secret Policy Name for Approle"
+  description = "db Secret Policy Name for Approle"
   default = "db_secret_policy"
 }
 
@@ -19,7 +19,7 @@ variable "admin_policy" {
 }
 
 variable "db_approle_role_name" {
-  description = "AWS Role Name for Approle"
+  description = "db Role Name for Approle"
   default = "db-secret-approle"
 }
 

@@ -34,12 +34,12 @@ For example:
 APP Client IP (private): ${aws_instance.app.private_ip}
 
 For example:
-   ssh -i private.key.pem ubuntu@${aws_instance.app.private_ip}
+   ssh -i private.key ubuntu@${aws_instance.app.private_ip}
 
 APP Approle Client IP (private): ${aws_instance.app-approle.private_ip}
 
 For example:
-   ssh -i private.key.pem ubuntu@${aws_instance.app-approle.private_ip}
+   ssh -i private.key ubuntu@${aws_instance.app-approle.private_ip}
 
 APP Client IAM Role ARN: ${data.aws_iam_role.vault-client.arn}
 
