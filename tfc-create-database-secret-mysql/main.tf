@@ -5,7 +5,7 @@ resource "vault_database_secrets_mount" "db" {
     name           = var.config_name
     username       = var.conn_username
     password       = var.conn_password
-    connection_url = var.conn_url
+    connection_url = "{{username}}:{{password}}@tcp(${var.conn_url})/"
     allowed_roles = var.allowed_roles
   }
 

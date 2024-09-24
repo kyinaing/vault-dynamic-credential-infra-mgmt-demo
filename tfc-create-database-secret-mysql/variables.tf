@@ -1,6 +1,6 @@
 variable "conn_url" {
   description = "(NEED to UPDATE) A URL containing connection information."
-  default = "{{username}}:{{password}}@tcp(mysql01.c9megm26srja.ap-southeast-1.rds.amazonaws.com:3306)/"
+  default = "mysql01.c9megm26srja.ap-southeast-1.rds.amazonaws.com:3306"
 }
 
 variable "Secret_path" {
