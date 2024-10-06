@@ -89,7 +89,7 @@ sudo chmod 0775 /home/ubuntu/mysql-tmpl.tmpl
 ##--------------------------------------------------------------------
 cat << EOF > /home/ubuntu/vault-agent.hcl
 #exit_after_auth = true
-pid_file = "./pidfile"
+pid_file = "/home/ubuntu/pidfile"
 
 auto_auth {
    method "aws" {
@@ -122,7 +122,6 @@ cache {
 }
 
 template_config {
-  static_secret_render_interval = "10m"
   exit_on_retry_failure = true
   max_connections_per_host = 20
   lease_renewal_threshold = 0.90
@@ -156,17 +155,15 @@ StartLimitBurst=3
 [Service]
 Type=notify
 EnvironmentFile=/etc/vault.d/vault.env
-User=vault
-Group=vault
+User=ubuntu
+Group=ubuntu
 ProtectSystem=full
-ProtectHome=read-only
-PrivateTmp=yes
 PrivateDevices=yes
 SecureBits=keep-caps
 AmbientCapabilities=CAP_IPC_LOCK
 CapabilityBoundingSet=CAP_SYSLOG CAP_IPC_LOCK
 NoNewPrivileges=yes
-ExecStart=/usr/bin/vault server -config=/home/ubuntu/vault-agent.hcl -log-level=debug
+ExecStart=/usr/bin/vault agent -config=/home/ubuntu/vault-agent.hcl -log-level=debug
 ExecReload=/bin/kill --signal HUP $MAINPID
 KillMode=process
 KillSignal=SIGINT
@@ -181,11 +178,11 @@ LimitCORE=0
 WantedBy=multi-user.target
 EOF
 
-sudo chmod 0664 /lib/systemd/system/vault.service
+sudo chmod 0664 /lib/systemd/system/vault-agent.service
 sudo systemctl daemon-reload
 
 systemctl enable vault-agent
-systemctl start vault-agent
+
 
 
 ##--------------------------------------------------------------------

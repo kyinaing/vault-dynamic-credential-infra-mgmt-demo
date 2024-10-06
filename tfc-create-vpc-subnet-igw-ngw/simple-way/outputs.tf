@@ -96,7 +96,7 @@ output "public_subnets_cidr_blocks" {
 
 output "public_route_table_ids" {
   description = "List of IDs of public route tables"
-  value       = local.public_route_table_ids
+  value       = aws_route_table.public[*].id
 }
 
 output "public_internet_gateway_route_id" {
@@ -132,7 +132,7 @@ output "private_subnets_cidr_blocks" {
 
 output "private_route_table_ids" {
   description = "List of IDs of private route tables"
-  value       = local.private_route_table_ids
+  value       = aws_route_table.private[*].id
 }
 
 output "private_nat_gateway_route_ids" {
@@ -178,7 +178,7 @@ output "database_subnet_group_name" {
 output "database_route_table_ids" {
   description = "List of IDs of database route tables"
   # Refer to https://github.com/terraform-aws-modules/terraform-aws-vpc/pull/926 before changing logic
-  value = local.database_route_table_ids
+  value = aws_route_table.database[*].id
 }
 
 output "database_nat_gateway_route_ids" {
