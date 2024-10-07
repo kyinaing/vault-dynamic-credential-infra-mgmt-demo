@@ -37,5 +37,5 @@ variable "tier_type" {
 variable "vault_version" {
     description = "Vault Cluster Minimum Version"
     type = string
-    default = "1.16.1"
+    default = "1.16.5"
 }
